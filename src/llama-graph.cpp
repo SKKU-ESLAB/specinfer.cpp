@@ -914,6 +914,26 @@ ggml_tensor * llm_graph_context::build_inp_embd(ggml_tensor * tok_embd) const {
     return cur;
 }
 
+ggml_tensor * llm_graph_context::build_inp_embd_fc(ggml_tensor * embd, ggml_tensor * fc, ggml_tensor * fc_b) const {
+    ggml_tensor * cur = nullptr;
+
+    ggml_tensor * hidden_states = ggml_new_tensor_2d(ctx0, GGML_TYPE_F32, hparams.n_embd, ubatch.n_tokens);
+    ggml_set_input(hidden_states);
+
+    cur = ggml_concat(ctx0, embd, hidden_states, 0);
+    cur = ggml_mul_mat(ctx0, fc, cur);
+    if (fc_b) {
+        cur = ggml_add(ctx0, cur, fc_b);
+    }
+
+    cb(cur, "inp_embd_fc_out", -1);
+
+    res->set_hidden_states(hidden_states);
+
+    return cur;
+}
+
+
 ggml_tensor * llm_graph_context::build_inp_pos() const {
     auto inp = std::make_unique<llm_graph_input_pos>(n_pos_per_embd());
 

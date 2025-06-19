@@ -347,6 +347,9 @@ public:
     virtual ggml_tensor * get_embd()        = 0;
     virtual ggml_tensor * get_embd_pooled() = 0;
 
+    virtual void set_hidden_states(ggml_tensor * hidden_states) = 0;
+    virtual ggml_tensor * get_hidden_states() = 0;
+
     virtual void set_inputs(const llama_ubatch * ubatch) = 0;
 };
 
@@ -361,6 +364,13 @@ public:
     ggml_tensor * get_logits()      override { return t_logits; }
     ggml_tensor * get_embd()        override { return t_embd; }
     ggml_tensor * get_embd_pooled() override { return t_embd_pooled; }
+
+    void set_hidden_states(ggml_tensor * hidden_states) override {
+        t_hidden_states = hidden_states;
+    }
+    ggml_tensor * get_hidden_states() override {
+        return t_hidden_states;
+    }
 
     void set_inputs(const llama_ubatch * ubatch) override {
         for (auto & input : inputs) {
@@ -378,6 +388,8 @@ public:
     ggml_tensor * t_logits      = nullptr;
     ggml_tensor * t_embd        = nullptr;
     ggml_tensor * t_embd_pooled = nullptr;
+
+    ggml_tensor * t_hidden_states = nullptr;
 
     std::vector<llm_graph_input_ptr> inputs;
 };
@@ -531,6 +543,7 @@ struct llm_graph_context {
     //
 
     ggml_tensor * build_inp_embd(ggml_tensor * tok_embd) const;
+    ggml_tensor * build_inp_embd_fc(ggml_tensor * embd, ggml_tensor * fc, ggml_tensor * fc_b) const;
     ggml_tensor * build_inp_pos() const;
     ggml_tensor * build_inp_attn_scale() const;
     ggml_tensor * build_inp_out_ids() const;

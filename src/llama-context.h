@@ -102,8 +102,17 @@ struct llama_context {
             llama_memory_state_i * mstate,
                      ggml_status & ret);
 
+    llm_graph_result_ptr process_ubatch_eagle(
+              const llama_ubatch & ubatch,
+                  llm_graph_type   gtype,
+            llama_memory_state_i * mstate,
+                     ggml_status & ret,
+                            void * data);
+
     int encode(const llama_batch & batch_inp);
     int decode(const llama_batch & batch_inp);
+
+    int decode_eagle(const llama_batch & batch_inp, void * data);
 
     //
     // state save/load
