@@ -278,7 +278,7 @@ llama_tokens common_speculative_gen_draft(
 
     return result;
 }
- 
+
 llama_tokens common_speculative_gen_draft_eagle(
         struct common_speculative * spec,
         struct common_speculative_params params,

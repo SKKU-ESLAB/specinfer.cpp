@@ -87,7 +87,7 @@ int main(int argc, char ** argv) {
 
     //model_dft = llama_init_dft.model.get();
     ctx_dft   = llama_init_dft.context.get();
-    
+
     // Trick: if the output buffer is in host memory, we need to allocate a new buffer for the draft model
     if (ggml_backend_buffer_is_host(llama_get_model(ctx_dft)->output->buffer)) {
         void * data = malloc(ggml_nbytes(llama_get_model(ctx_tgt)->output));
@@ -146,7 +146,7 @@ int main(int argc, char ** argv) {
 
     llama_batch temp_batch_tgt = llama_batch_init(llama_n_batch(ctx_tgt), 0, 1);
     int temp_n_past = 0;
-    for (int i = 0; i < inp.size(); i++) {
+    for (size_t i = 0; i < inp.size(); i++) {
         common_batch_add(temp_batch_tgt, inp[i], temp_n_past++, { 0 }, true);
     }
 
